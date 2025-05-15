@@ -177,10 +177,47 @@ public class Term{
     }
 
     public static Term toTerm(String str){
-
+        str = str.toUpperCase();
+        StringBuilder sb = new StringBuilder();
+        double coefficient = 1;
+        double degree = 1;
+        Term value = null;
+        Trig trig = null;
+        for(int i = 0 ; i < str.length(); i++){
+            if(str.charAt(i) == '('){
+                coefficient = Double.parseDouble(sb.toString());
+                sb = new StringBuilder();
+                while(str.charAt(i) != ')'){
+                    sb.append(str.charAt(i));
+                    i++;
+                }
+                if(sb.toString() == "X"){
+                    value = null;
+                }
+                else{
+                    value = Term.toTerm(sb.toString());
+                }
+            }
+            else if(str.charAt(i) == '^'){
+                degree = Double.parseDouble(str.substring(i+1));
+                break;
+            }
+            else if(str.charAt(i) == 'S'){
+                coefficient = Double.parseDouble(sb.toString());
+                
+                trig = Trig.SIN;
+            }else if(str.charAt(i) == 'C'){
+                coefficient = Double.parseDouble(sb.toString());
+                
+                trig = Trig.COS;
+            }
+            else{
+                sb.append(str.charAt(i));
+            }
+            
+        }
+        return new Term(coefficient, degree, value, trig);
     }
-    public static Equation toEquation(String str){
-        
-    }
+    
 
 }
