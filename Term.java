@@ -83,13 +83,18 @@ public class Term{
         if(!isDifferentiable()){
             throw new IllegalArgumentException("The term is not differentiable");
         }
-        
-        terms.add(this.powerRule());
+        if(degree == 1 && trig != null){
+            
+        }
+        else{
+            terms.add(this.powerRule());
+
+        }
 
         if(trig != null){
+            
             terms.add(this.trigDiff());
         }
-        
         if(value != null && value.isDifferentiable()){
             
             terms.addAll(value.differentiate());
@@ -116,7 +121,7 @@ public class Term{
         
         
         if(trig != null){
-            sb.append("*").append(trig.toString()).append("(");
+            sb.append(trig.toString()).append("(");
         }
         if(value == null){
             sb.append("x");
@@ -185,9 +190,14 @@ public class Term{
         Trig trig = null;
         for(int i = 0 ; i < str.length(); i++){
             if(str.charAt(i) == '('){
-                coefficient = Double.parseDouble(sb.toString());
+                if(sb.length() > 0){
+                    coefficient = Double.parseDouble(sb.toString());
+                }else{
+                    coefficient = 1;
+                }
                 sb = new StringBuilder();
-                while(str.charAt(i) != ')'){
+                i++;
+                while(i < str.length() && str.charAt(i) != ')'){
                     sb.append(str.charAt(i));
                     i++;
                 }
@@ -203,13 +213,22 @@ public class Term{
                 break;
             }
             else if(str.charAt(i) == 'S'){
-                coefficient = Double.parseDouble(sb.toString());
+                if(i!=0){
+                    coefficient = Double.parseDouble(sb.toString());
+                }
+                i+=2;
+                
                 
                 trig = Trig.SIN;
             }else if(str.charAt(i) == 'C'){
                 coefficient = Double.parseDouble(sb.toString());
-                
+                i+=2;
                 trig = Trig.COS;
+            }else if(str.charAt(i) == 'X'){
+                if(i!=0){
+                    coefficient = Double.parseDouble(sb.toString());
+                }
+                sb = new StringBuilder();
             }
             else{
                 sb.append(str.charAt(i));

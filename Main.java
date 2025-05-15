@@ -4,12 +4,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         
-        String temp = "3x^2 + SIN(4x^2) + 5x + 6";
-        Equation eq = Equation.toEquation(temp);
-        System.out.println("The equation is: " + eq.toString());
+        // String temp = "3x^2 + SIN(4x^2) + 5x + 6";
+        // Equation eq = Equation.toEquation(temp);
+        // System.out.println("The equation is: " + eq.toString());
 
 
-        // Scanner in = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
         // String input;
         // do{
         // System.out.println("What would you like to do?");
@@ -41,9 +41,19 @@ public class Main {
         // }
 
 
+        System.out.println("enter your term");
+        String temp = in.nextLine();
+        
+        Term a = (Term.toTerm(temp));
+        System.out.println(a.toString());
+        ArrayList<Term> termList = a.differentiate();
+        System.out.println(Term.toString(termList));
 
-
-
+        // String eq = "3x^2 + SIN(4x^2) + 5x + 6";
+        // System.out.println("The equation is: " + eq);
+        // Equation equation = Equation.toEquation(eq);
+        // System.out.println("The equation is: " + equation.toString());
+        
 
 
 

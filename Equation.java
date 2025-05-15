@@ -39,6 +39,7 @@ public class Equation {
                 equation.addTerm(Term.toTerm(sb.toString()));
                 equation.addOperator(str.charAt(i));
                 sb = new StringBuilder();
+                i++;//skip current operator
             }
             sb.append(str.charAt(i));
         }
@@ -54,5 +55,8 @@ public class Equation {
             }
         }
         return sb.toString();
+    }
+    public ArrayList<Term> differentiate(){
+        return terms;
     }
 }
