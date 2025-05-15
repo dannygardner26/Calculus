@@ -179,6 +179,8 @@ public class Term{
     public static Term toTerm(String str){
 
     }
-    public static toEquation
+    public static Equation toEquation(String str){
+        
+    }
 
 }
