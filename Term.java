@@ -11,7 +11,7 @@ public class Term{
     public Term(double coefficient){//constant declaration
         this.coefficient = coefficient;
         this.value = null;
-        this.degree = degree;
+        this.degree = 0;
         this.trig = null;
     }
     
@@ -45,7 +45,7 @@ public class Term{
     public Term powerRule(){
         
         if(coefficient != 0 && degree != 0){
-            Term newTerm = new Term(coefficient*degree, degree-1, value, trig);
+            Term newTerm = new Term(coefficient, degree-1, value, trig);
             return newTerm;
         }
         else{
@@ -68,7 +68,7 @@ public class Term{
 
     public Term trigDiff(){
         if(trig != null){
-            Term newTerm = new Term(trig.willBeNegative(), 1, value, trig.differentiate());
+            Term newTerm = new Term(trig.willBeNegative() * coefficient, degree, value, trig.differentiate());
             return newTerm;
         }
         else{
@@ -83,13 +83,14 @@ public class Term{
         if(!isDifferentiable()){
             throw new IllegalArgumentException("The term is not differentiable");
         }
-        if(degree == 1 && trig != null){
-            
-        }
-        else{
+        if(trig == null || value != null){
             terms.add(this.powerRule());
 
         }
+        // else{
+        //     terms.add(this.powerRule());
+
+        // }
 
         if(trig != null){
             
@@ -115,7 +116,7 @@ public class Term{
         if(coefficient<0){
             sb.append("-");
         }
-        if(coefficient != 1){
+        if(coefficient != 1 && coefficient != -1 || (trig == null && coefficient == -1)) {
             sb.append(Math.abs(coefficient));
         }
         
@@ -170,9 +171,11 @@ public class Term{
             }
             simplifiedTerms.add(a);
         }
-        if(simplifiedTerms.size()>=1){
-            simplifiedTerms.get(0).coefficient = leadingCoefficient;
-        }
+        if(!simplifiedTerms.isEmpty()) {
+        Term firstTerm = simplifiedTerms.get(0);
+        simplifiedTerms.set(0, new Term(leadingCoefficient, firstTerm.degree, 
+                                      firstTerm.value, firstTerm.trig));
+    }
         return simplifiedTerms;
 
     }
@@ -188,6 +191,15 @@ public class Term{
         double degree = 1;
         Term value = null;
         Trig trig = null;
+        
+        
+        if(str.charAt(0) == '-'){
+            coefficient = -1;
+            str = str.substring(1);
+        }
+        
+
+
         for(int i = 0 ; i < str.length(); i++){
             if(str.charAt(i) == '('){
                 if(sb.length() > 0){
@@ -221,7 +233,9 @@ public class Term{
                 
                 trig = Trig.SIN;
             }else if(str.charAt(i) == 'C'){
-                coefficient = Double.parseDouble(sb.toString());
+                if(i!=0){
+                    coefficient = Double.parseDouble(sb.toString());
+                }
                 i+=2;
                 trig = Trig.COS;
             }else if(str.charAt(i) == 'X'){
@@ -235,7 +249,68 @@ public class Term{
             }
             
         }
+        // if(isNegative){
+        //     coefficient *= -1;
+        // }
         return new Term(coefficient, degree, value, trig);
+    }
+    public static Equation multiRule(Term a, Term b){
+        ArrayList<Term> termList = new ArrayList<>();
+        ArrayList<Character> operatorList = new ArrayList<>();
+        termList.add(a);
+        ArrayList<Term> bDiff = b.differentiate();
+        for(int i = 0; i < bDiff.size(); i++){
+            operatorList.add('*');
+            termList.add(bDiff.get(i));
+        }
+        operatorList.add('+');
+
+        termList.add(b);
+        ArrayList<Term> aDiff = a.differentiate();
+
+        for(int i = 0; i < aDiff.size(); i++){
+            operatorList.add('*');
+            termList.add(aDiff.get(i));
+        }
+        Equation eq = new Equation(termList, operatorList);
+        return eq;
+        
+
+        
+    
+        
+
+    }
+    public static Equation quotientRule(Term a, Term b){//for an a/b function
+        ArrayList<Term> termList = new ArrayList<>();
+        ArrayList<Character> operatorList = new ArrayList<>();
+
+
+        
+        termList.add(b);
+
+        ArrayList<Term> aDiff = a.differentiate();//take bottom deriv first
+        for(int i = 0; i < aDiff.size(); i++){
+            operatorList.add('*');
+            termList.add(aDiff.get(i));
+        }
+        operatorList.add('/');
+        termList.add(new Term(1,2,b));
+
+        
+        operatorList.add('-');
+        termList.add(a);
+        ArrayList<Term> bDiff = b.differentiate();
+        for(int i = 0; i < bDiff.size(); i++){
+            operatorList.add('*');
+            termList.add(bDiff.get(i));
+        }
+        operatorList.add('/');
+        termList.add(new Term(1,2,b));
+        
+        Equation eq = new Equation(termList, operatorList);
+        return eq;
+
     }
     
 

@@ -57,6 +57,8 @@ public class Equation {
         return sb.toString();
     }
     public ArrayList<Term> differentiate(){
+        // x^2 + Sin(x) * 3x^4 + 3x^2 / Cos(x)
         return terms;
     }
+    
 }

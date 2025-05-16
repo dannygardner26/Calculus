@@ -48,6 +48,7 @@ public class Main {
         System.out.println(a.toString());
         ArrayList<Term> termList = a.differentiate();
         System.out.println(Term.toString(termList));
+        System.out.println(Term.toString(Term.simplify(termList)));
 
         // String eq = "3x^2 + SIN(4x^2) + 5x + 6";
         // System.out.println("The equation is: " + eq);
